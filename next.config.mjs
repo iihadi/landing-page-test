@@ -1,4 +1,17 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'betway.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.betwaygroup.com',
+      },
+    ],
+  },
   async rewrites() {
     return [
       {

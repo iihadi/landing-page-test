@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, type FC } from 'react';
+import { FC } from 'react';
 import Modal from './Modal';
 
 interface SignUpModalProps {

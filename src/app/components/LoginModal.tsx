@@ -3,6 +3,7 @@
 
 import { useState, type FC } from 'react';
 import Modal from './Modal';
+import { notifications } from '@mantine/notifications';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -10,16 +11,16 @@ interface LoginModalProps {
   onSwitchToSignUp: () => void;
 }
 
-const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToSignUp,}) => {
-  const [credential, setCredential] = useState('');
+const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToSignUp, }) => {
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState<{ credential?: string; password?: string; api?: string }>({});
+  const [errors, setErrors] = useState<{ userName?: string; password?: string; api?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = () => {
-    const newErrors: { credential?: string; password?: string } = {};
-    if (!credential) {
-      newErrors.credential = 'Username or Email is required';
+    const newErrors: { userName?: string; password?: string } = {};
+    if (!userName) {
+      newErrors.userName = 'Username or Email is required';
     }
     if (!password) {
       newErrors.password = 'Password is required';
@@ -41,18 +42,24 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToSignUp,}) 
       const response = await fetch('/api/sign-in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: credential, password }),
+        body: JSON.stringify({ username: userName, password }),
       });
       const data = await response.json();
       if (response.ok) {
         console.log(`Welcome, ${data.name}`);
-        alert(`Welcome, ${data.name}`)
+        notifications.show({
+          title: 'Login Successful',
+          message: `Welcome back, ${data.name}!`,
+          color: 'green',
+          autoClose: 5000,
+        });
         onClose();
       } else {
-        setErrors({ api: data.message || 'An unknown error occurred' });
+        setErrors({ api: data.message || 'unknown error' });
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      setErrors({ api: 'Failed to connect to the server.' });
+      setErrors({ api: 'server error' });
     } finally {
       setIsLoading(false);
     }
@@ -69,13 +76,13 @@ const LoginModal: FC<LoginModalProps> = ({ isOpen, onClose, onSwitchToSignUp,}) 
 
       <form onSubmit={handleLogin} noValidate>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="credential">Username or Email</label>
+          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="userName">Username or Email</label>
           <input
-            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.credential ? 'border-red-500' : ''}`}
-            id="credential" type="text" placeholder="Username or Email"
-            value={credential} onChange={(e) => setCredential(e.target.value)}
+            className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline ${errors.userName ? 'border-red-500' : ''}`}
+            id="userName" type="text" placeholder="Username or Email"
+            value={userName} onChange={(e) => setUserName(e.target.value)}
           />
-          {errors.credential && <p className="text-red-500 text-xs italic mt-1">{errors.credential}</p>}
+          {errors.userName && <p className="text-red-500 text-xs italic mt-1">{errors.userName}</p>}
         </div>
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">Password</label>

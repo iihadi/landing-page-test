@@ -4,9 +4,10 @@ export interface NavLink {
   colour: string;
 }
 
-export interface promotionsData {
+export interface PromotionData {
+    id: number;
     title: string;
-    subject: string;
+    subtitle: string;
     buttonText: string;
     action: string;
 }
@@ -14,7 +15,7 @@ export interface promotionsData {
 export interface PageData {
   brandName: string;
   logoUrl: string;
-  backgroundUrl: string,
+  backgroundUrl: string;
   navLinks: NavLink[];
-  promotions: promotionsData;
+  promotions: PromotionData[];
 }

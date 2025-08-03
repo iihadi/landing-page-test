@@ -17,12 +17,10 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, children }) => {
       onClick={onClose}
       className="fixed inset-0 bg-opacity-70 flex justify-center items-center z-50 transition-opacity duration-300"
     >
-      {/* Modal Content */}
       <div
-        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
+        onClick={(e) => e.stopPropagation()}
         className="relative bg-white text-black p-8 rounded-lg w-full max-w-sm m-4"
       >
-        {/* Close Button */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"

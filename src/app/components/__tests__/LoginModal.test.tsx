@@ -2,6 +2,14 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import LoginModal from '../LoginModal';
+import { notifications } from '@mantine/notifications';
+
+// 1. Mock the Mantine notifications module
+jest.mock('@mantine/notifications', () => ({
+  notifications: {
+    show: jest.fn(),
+  },
+}));
 
 // Mock the global fetch function
 global.fetch = jest.fn();
@@ -13,6 +21,7 @@ describe('LoginModal', () => {
   beforeEach(() => {
     // Reset mocks before each test
     (fetch as jest.Mock).mockClear();
+    (notifications.show as jest.Mock).mockClear();
     mockOnClose.mockClear();
     mockOnSwitch.mockClear();
   });
@@ -41,14 +50,12 @@ describe('LoginModal', () => {
     expect(await screen.findByText('Password must be at least 8 characters')).toBeInTheDocument();
   });
 
-  it('calls API, shows an alert, and closes on successful login', async () => {
+  // 2. Updated test case for successful login
+  it('calls API, shows a notification, and closes on successful login', async () => {
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({ name: 'John Doe' }),
     });
-
-    // Spy on window.alert
-    const alertSpy = jest.spyOn(window, 'alert').mockImplementation(() => {});
 
     render(<LoginModal isOpen={true} onClose={mockOnClose} onSwitchToSignUp={mockOnSwitch} />);
     
@@ -58,12 +65,15 @@ describe('LoginModal', () => {
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith('/api/sign-in', expect.any(Object));
-      expect(alertSpy).toHaveBeenCalledWith('Welcome, John Doe');
+      // 3. Assert that the Mantine notification was shown with the correct properties
+      expect(notifications.show).toHaveBeenCalledWith({
+        title: 'Login Successful',
+        message: 'Welcome back, John Doe!',
+        color: 'green',
+        autoClose: 5000,
+      });
       expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
-
-    // Clean up the spy
-    alertSpy.mockRestore();
   });
 
   it('shows API error message on failed login', async () => {
