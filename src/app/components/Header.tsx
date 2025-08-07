@@ -1,7 +1,6 @@
 'use client';
 
 import type { FC } from 'react';
-import Image from 'next/image';
 
 interface HeaderProps {
   brandName: string;
@@ -14,11 +13,9 @@ const Header: FC<HeaderProps> = ({ brandName, logoUrl, onLoginClick, onSignUpCli
   return (
     <header className="sticky top-0 z-40 bg-black">
       <div className="container mx-auto px-4 flex justify-between items-center py-2">
-        <Image
+        <img
           src={logoUrl}
           alt={`${brandName} logo`}
-          width={110}
-          height={32}
           className="h-8 w-auto"
         />
         <div className="flex items-center space-x-2">
