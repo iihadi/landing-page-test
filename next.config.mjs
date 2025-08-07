@@ -5,10 +5,12 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'betway.com',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'cdn.betwaygroup.com',
+        pathname: '/**',
       },
     ],
   },
